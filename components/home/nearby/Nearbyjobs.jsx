@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useRouter } from "expo-router"
+import { Stack, useRouter } from "expo-router"
 import {
   View,
   Text,
@@ -20,6 +20,8 @@ import useFetch from "../../../hook/useFetch"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import tw from "twrnc"
 import { useNotes } from "../../../contexts/NoteProvider"
+import ScreenHeaderBtn from "../../common/header/ScreenHeaderBtn"
+import { StatusBar } from "expo-status-bar"
 
 const Nearbyjobs = () => {
   let newarr
@@ -35,7 +37,7 @@ const Nearbyjobs = () => {
     seterror(false)
     AsyncStorage.getAllKeys()
       .then((res) => {
-        AsyncStorage.multiGet(res)
+        AsyncStorage.multiGet(res?.filter((data) => data !== "appLaunched"))
           .then(async (res) => {
             const newArrayWithId = res.map(([number, jsonString]) => {
               const dataObject = JSON.parse(jsonString)
@@ -74,6 +76,28 @@ const Nearbyjobs = () => {
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
+      <StatusBar hidden={false} />
+
+      <Stack.Screen
+        options={{
+          headerStyle: { backgroundColor: "#f4511e" },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerTitle: "",
+          headerLeft: () => null,
+          headerRight: () => (
+            <ScreenHeaderBtn
+              iconUrl={icons.add}
+              dimension="100%"
+              handlePress={() => {
+                router.push(`/add-movie`)
+              }}
+            />
+          ),
+        }}
+      />
       <View>
         <View>
           <View style={stylex.container}>
